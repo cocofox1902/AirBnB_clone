@@ -3,6 +3,8 @@
 class BaseModel is a class that defines
 all common attributes/methods for other classes
 """
+import json
+import models
 import uuid
 from datetime import datetime
 
@@ -66,6 +68,7 @@ class BaseModel:
                 nothing
         """
         self.updated_at = datetime.now()
+        models.storage.save()
 
     def to_dict(self):
         """
