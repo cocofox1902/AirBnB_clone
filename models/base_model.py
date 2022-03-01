@@ -3,6 +3,8 @@
 class BaseModel is a class that defines
 all common attributes/methods for other classes
 """
+import json
+import models
 import uuid
 from datetime import datetime
 
@@ -20,12 +22,10 @@ class BaseModel:
         """
         Function - __init__(self, *args, **kwargs):
             assigned the value to the instance
-
             Object:
                 id(str): the id of the class
                 created_at(*): the date when the class is used
                 updated_at(*): the date when the class is updated
-
             Return:
                 nothing
         """
@@ -41,10 +41,8 @@ class BaseModel:
         """
         Function - __str__(self):
             print the information of the class
-
             Object:
                 nothing
-
             Return:
                 the class name, the id, and the dictionairy
         """
@@ -58,23 +56,20 @@ class BaseModel:
         """
         Function - save(self):
             update the time when the class is used
-
             Object:
                 updated_at(*): the date when the class is updated
-
             Return:
                 nothing
         """
         self.updated_at = datetime.now()
+        models.storage.save()
 
     def to_dict(self):
         """
         Function - to_dict(self):
             the ditionary of the class
-
             Object:
                 dict_2(dict): the new dictionary of the class
-
             Return:
                 the new dictionary
         """
