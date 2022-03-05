@@ -8,21 +8,21 @@ import uuid
 from datetime import datetime
 
 
-def convertTime(obj):
-    """
-    Function - convertTime(obj):
-        convert in date format
+# def convertTime(obj):
+#     """
+#     Function - convertTime(obj):
+#         convert in date format
 
-        Object:
-            obj(datetime): date time to convert
+#         Object:
+#             obj(datetime): date time to convert
 
-        Return:
-            the date in a datetime format
-    """
+#         Return:
+#             the date in a datetime format
+#     """
 
-    if type(obj) in [datetime]:
-        obj = obj.strftime('%Y-%m-%dT%H:%M:%S.%f')
-    return datetime.strptime(obj, "%Y-%m-%dT%H:%M:%S.%f")
+#     if type(obj) in [datetime]:
+#         obj = obj.strftime('%Y-%m-%dT%H:%M:%S.%f')
+#     return datetime.strptime(obj, "%Y-%m-%dT%H:%M:%S.%f")
 
 
 class BaseModel:
@@ -48,19 +48,16 @@ class BaseModel:
         """
         if kwargs:
             for first, second in kwargs.items():
-                if first == "created_at":
-                    self.created_at = convertTime(kwargs["created_at"])
-                if first == "updated_at":
-                    self.updated_at = convertTime(kwargs["updated_at"])
-                if first == '__class__':
-                    continue
-                else:
-                    setattr(self, first, second)
-            models.storage.new(self)
+                if first != '__class__':
+                    if first != 'created_at' and first != 'updated_at':
+                        setattr(self, first, second)
+                    else:
+                        setattr(self, first, datetime.fromisoformat(second))
         else:
+            time = datetime.now()
             self.id = str(uuid.uuid4())
-            self.created_at = datetime.today().isoformat()
-            self.updated_at = datetime.today().isoformat()
+            self.created_at = time
+            self.updated_at = time
             models.storage.new(self)
 
     def __str__(self):
@@ -74,11 +71,7 @@ class BaseModel:
             Return:
                 the class name, the id, and the dictionairy
         """
-        self.__dict__.update({
-            "created_at": convertTime(self.created_at),
-            "updated_at": convertTime(self.updated_at),
-        })
-        return("[{:s}] ({:s}) {}".format(
+        return("[{}] ({}) {}".format(
                 self.__class__.__name__,
                 self.id,
                 self.__dict__
@@ -109,12 +102,8 @@ class BaseModel:
             Return:
                 the new dictionary
         """
-        if type(self.created_at) in [str]:
-            self.created_at = convertTime(self.created_at)
-        if type(self.updated_at) in [str]:
-            self.updated_at = convertTime(self.updated_at)
-        self.created_at = self.created_at.strftime('%Y-%m-%dT%H:%M:%S.%f')
-        self.updated_at = self.updated_at.strftime('%Y-%m-%dT%H:%M:%S.%f')
-        dictnew = (self.__dict__).copy()
-        dictnew['__class__'] = self.__class__.__name__
-        return dictnew
+        dict_new = self.__dict__.copy()
+        dict_new["__class__"] = self.__class__.__name__
+        dict_new["created_at"] = dict_new["created_at"].isoformat()
+        dict_new["updated_at"] = dict_new["updated_at"].isoformat()
+        return dict_new
