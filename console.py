@@ -69,7 +69,7 @@ class HBNBCommand(cmd.Cmd):
             pass
         try:
             if name[0] == fourth:
-                arguments = name[0] + " " + aux[1]
+                arguments = list_of_arg[0] + " " + aux[1]
                 self.do_destroy(arguments)
         except Exception:
             pass
@@ -136,21 +136,24 @@ class HBNBCommand(cmd.Cmd):
         """destroy to Deletes an instance based on the class name and id
         USE: destoy <class name> <id>
         """
-        name = arg.split()
-        kw = ".".join(name)
-        if not name:
+        split_arg = shlex.split(arg)
+
+        if len(split_arg) == 0:
             print("** class name missing **")
-        elif name[0] not in globals():
-            print("** class doesn't exist **")
-        elif len(name) == 1:
-            print("** instance id missing **")
-        elif kw not in models.storage.all():
-            print("** no instance found **")
+            return False
+
+        if split_arg[0] in class_dict:
+            if len(split_arg) > 1:
+                key = split_arg[0] + '.' + split_arg[1]
+                if key in storage.all():
+                    storage.all().pop(key)
+                    storage.save()
+                else:
+                    print("** no instance found **")
+            else:
+                print("** instance id missing **")
         else:
-            dic = models.storage.all()
-            if kw in dic:
-                del dic[kw]
-                models.storage.save()
+            print("** class doesn't exist **")
 
     def do_all(self, arg):
         """all to Prints all string representation
@@ -168,27 +171,37 @@ class HBNBCommand(cmd.Cmd):
         on the class name and id by adding or updating attribute
         USE: update <class name> <id> <attribute name> "<attribute value>
         """
-        args = arg.split()
-        kw = ".".join(args[:2])
-        if not args:
+        if not line:
             print("** class name missing **")
-        elif args[0] not in globals():
+            return False
+        line = line.replace(",", "")
+        data = shlex.split(line)
+        if data[0] not in class_dict:
             print("** class doesn't exist **")
-        elif len(args) < 2:
+            return False
+        if len(data) == 1:
             print("** instance id missing **")
-        elif ".".join(args[:2]) not in models.storage.all():
+            return False
+        strLine = f"{data[0]}.{data[1]}"
+        if strLine not in models.storage.all():
             print("** no instance found **")
-        elif len(args) < 3:
+            return False
+        if len(data) == 2:
             print("** attribute name missing **")
-        elif len(args) < 4:
+            return False
+        if len(data) == 3:
             print("** value missing **")
-        else:
-            kw = ".".join(args[:2])
-            atributs = args[2]
-            value = args[3]
-            _dict = models.storage.all()[kw].__dict__
-            _dict[atributs] = value
-            models.storage.save()
+            return False
+        currentInstance = models.storage.all()[strLine]
+        if data[2] == "id" or data[2] == "created_at" or\
+                data[2] == "updated_at":
+            return False
+        if data[3].isnumeric():
+            data[3] = int(data[3])
+        elif self.is_float(data[3]):
+            data[3] = float(data[3])
+        setattr(currentInstance, data[2], data[3])
+        models.storage.save()
 
     def do_count(self, cls_name):
         """count to retrieve the number of instances of a class

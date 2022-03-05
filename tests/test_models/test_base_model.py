@@ -11,6 +11,7 @@ from models import base_model
 from models.base_model import BaseModel
 import os
 
+
 class TestBaseModel(unittest.TestCase):
     """
     Test All the instance used listed:
