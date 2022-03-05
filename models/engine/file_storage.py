@@ -91,13 +91,9 @@ class FileStorage:
                 nothing
         """
         try:
-            if os.path.isfile(self.__file_path):
-                with open(self.__file_path, mode="r", encoding="utf-8") as mfy:
-                    dic_to_dic = json.load(mfy)
-                    for val in dic_to_dic.values():
-                        clsName = val['__class__']
-                        self.new(eval(clsName)(**val))
-            else:
-                return
-        except NoFoundFile:
+            with open(self.__file_path, mode="r", encoding="utf-8") as f:
+                dic_to_dic = json.load(f)
+                for val in dic_to_dic.values():
+                    self.new(eval(val['__class__'])(**val))
+        except Exception:
             pass

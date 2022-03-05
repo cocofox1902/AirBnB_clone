@@ -16,7 +16,7 @@ from models import storage
 import shlex
 
 
-dict_list = {
+class_dict = {
     "BaseModel": BaseModel,
     "User": User,
     "State": State,
@@ -30,10 +30,10 @@ dict_list = {
 class HBNBCommand(cmd.Cmd):
     """
     All the instance used listed:
-        default(self, line):
+        default(self, arg):
         emptyline(self):
-        do_quit(self, line):
-        do_EOF(self, line):
+        do_quit(self, arg):
+        do_EOF(self, arg):
         do_create(self, arg):
         do_show(self, arg):
         do_destroy(self, arg):
@@ -42,14 +42,15 @@ class HBNBCommand(cmd.Cmd):
     """
     prompt = '(hbnb) '
 
-    def default(self, line):
-        list_of_arg = line.split('.')
+    def default(self, arg):
+        list_of_arg = arg.split('.')
         fisrt = "all()"
         second = "count()"
-        third = "show("
-        fourth = "destroy("
+        third = "show"
+        fourth = "destroy"
         aux = list_of_arg[1]
         aux = aux.split("\"")
+        name = list_of_arg[1].split('(')
         try:
             if list_of_arg[1] == fisrt:
                 self.do_all(list_of_arg[0])
@@ -61,30 +62,34 @@ class HBNBCommand(cmd.Cmd):
         except Exception:
             pass
         try:
-            if aux[0] == third:
+            if name[0] == third:
                 arguments = list_of_arg[0] + " " + aux[1]
                 self.do_show(arguments)
         except Exception:
             pass
         try:
-            if aux[0] == fourth:
-                arguments = list_of_arg[0] + " " + aux[1]
+            if name[0] == fourth:
+                arguments = name[0] + " " + aux[1]
                 self.do_destroy(arguments)
         except Exception:
             pass
 
     def emptyline(self):
-        """empty line
+        """empty arg
         """
         pass
 
-    def do_quit(self, line):
+    def parse(arg):
+        """Convert a series of zero or more numbers to an argument tuple"""
+        return shlex.split(arg)
+
+    def do_quit(self, arg):
         """Quit command to exit the program
         USE: $ quit
         """
         return True
 
-    def do_EOF(self, line):
+    def do_EOF(self, arg):
         """End Of File to quit the file
         USE: $ EOF
         """
@@ -109,18 +114,23 @@ class HBNBCommand(cmd.Cmd):
         of an instance based on the class name and id
         USE: $ show <class name> <id>
         """
-        name = arg.split()
-        kw = ".".join(name)
-        if not name:
+        if not arg:
             print("** class name missing **")
-        elif len(name) == 1:
-            print("** instance id missing **")
-        elif name[0] not in globals():
+            return False
+        data = shlex.split(arg)
+        if data[0] not in class_dict.keys():
             print("** class doesn't exist **")
-        elif kw not in models.storage.all():
+            return False
+        if len(data) == 1:
+            print("** instance id missing **")
+            return False
+        classNameId = f"{data[0]}.{data[1]}"
+        print(classNameId)
+        print(models.storage.all())
+        if classNameId not in models.storage.all():
             print("** no instance found **")
-        else:
-            print(models.storage.all()[kw])
+            return False
+        print(models.storage.all()[classNameId])
 
     def do_destroy(self, arg):
         """destroy to Deletes an instance based on the class name and id
@@ -158,32 +168,27 @@ class HBNBCommand(cmd.Cmd):
         on the class name and id by adding or updating attribute
         USE: update <class name> <id> <attribute name> "<attribute value>
         """
-        list_args = conv(arg)
-        if len(list_args) == 0:
+        args = arg.split()
+        kw = ".".join(args[:2])
+        if not args:
             print("** class name missing **")
-        elif (list_args[0] not in dict_list):
+        elif args[0] not in globals():
             print("** class doesn't exist **")
-        elif len(list_args) < 2:
+        elif len(args) < 2:
             print("** instance id missing **")
-        elif (f"{list_args[0]}.{list_args[1]}"
-               ) not in storage._FileStorage__objects:
+        elif ".".join(args[:2]) not in models.storage.all():
             print("** no instance found **")
-        elif (len(list_args) < 3):
+        elif len(args) < 3:
             print("** attribute name missing **")
-        elif (len(list_args) < 4):
+        elif len(args) < 4:
             print("** value missing **")
         else:
-            setattr(
-                storage._FileStorage__objects[f"{list_args[0]}.{list_args[1]}"
-                                              ], list_args[2], tryeval(
-                                                  (list_args[3])))
-            instance = storage._FileStorage__objects[
-                f"{list_args[0]}.{list_args[1]}"]
-            instance.save()
-
-    def conv(arg):
-        """comvert arg tuple"""
-        return shlex.split(arg)
+            kw = ".".join(args[:2])
+            atributs = args[2]
+            value = args[3]
+            _dict = models.storage.all()[kw].__dict__
+            _dict[atributs] = value
+            models.storage.save()
 
     def do_count(self, cls_name):
         """count to retrieve the number of instances of a class
