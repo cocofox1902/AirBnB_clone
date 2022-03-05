@@ -12,6 +12,19 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+from models import storage
+import shlex
+
+
+dict_list = {
+    "BaseModel": BaseModel,
+    "User": User,
+    "State": State,
+    "City": City,
+    "Amenity": Amenity,
+    "Place": Place,
+    "Review": Review
+}
 
 
 class HBNBCommand(cmd.Cmd):
@@ -145,27 +158,32 @@ class HBNBCommand(cmd.Cmd):
         on the class name and id by adding or updating attribute
         USE: update <class name> <id> <attribute name> "<attribute value>
         """
-        args = arg.split()
-        kw = ".".join(args[:2])
-        if not args:
+        list_args = conv(arg)
+        if len(list_args) == 0:
             print("** class name missing **")
-        elif args[0] not in globals():
+        elif (list_args[0] not in dict_list):
             print("** class doesn't exist **")
-        elif len(args) < 2:
+        elif len(list_args) < 2:
             print("** instance id missing **")
-        elif ".".join(args[:2]) not in models.storage.all():
+        elif (f"{list_args[0]}.{list_args[1]}"
+               ) not in storage._FileStorage__objects:
             print("** no instance found **")
-        elif len(args) < 3:
+        elif (len(list_args) < 3):
             print("** attribute name missing **")
-        elif len(args) < 4:
+        elif (len(list_args) < 4):
             print("** value missing **")
         else:
-            kw = ".".join(args[:2])
-            atributs = args[2]
-            value = args[3]
-            _dict = models.storage.all()[kw].__dict__
-            _dict[atributs] = value
-            models.storage.save()
+            setattr(
+                storage._FileStorage__objects[f"{list_args[0]}.{list_args[1]}"
+                                              ], list_args[2], tryeval(
+                                                  (list_args[3])))
+            instance = storage._FileStorage__objects[
+                f"{list_args[0]}.{list_args[1]}"]
+            instance.save()
+
+    def conv(arg):
+        """comvert arg tuple"""
+        return shlex.split(arg)
 
     def do_count(self, cls_name):
         """count to retrieve the number of instances of a class
