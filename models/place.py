@@ -11,6 +11,7 @@ class Place(BaseModel):
     public class atributes: user_id(str)
     public class atributes: name(str)
     public class atributes: description(int)
+    public class atributes: number_rooms(int)
     public class atributes: number_bathrooms(int)
     public class atributes: max_guest(int)
     public class atributes: price_by_night(int)
@@ -21,7 +22,8 @@ class Place(BaseModel):
     city_id = ''
     user_id = ''
     name = ''
-    description = 0
+    description = ''
+    number_rooms = 0
     number_bathrooms = 0
     max_guest = 0
     price_by_night = 0
