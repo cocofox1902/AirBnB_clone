@@ -6,7 +6,6 @@ import cmd
 import re
 from models.base_model import BaseModel
 import models
-import shlex
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -97,21 +96,18 @@ class HBNBCommand(cmd.Cmd):
         of an instance based on the class name and id
         USE: $ show <class name> <id>
         """
-        if not arg:
-            print("** class name missing ** ")
-            return False
-        data = shlex.split(arg)
-        if data[0] not in self.classes:
-            print("** class doesn't exist **")
-            return False
-        if len(data) == 1:
+        name = arg.split()
+        kw = ".".join(name)
+        if not name:
+            print("** class name missing **")
+        elif len(name) == 1:
             print("** instance id missing **")
-            return False
-        classNameId = f"{data[0]}.{data[1]}"
-        if classNameId not in models.storage.all():
+        elif name[0] not in globals():
+            print("** class doesn't exist **")
+        elif kw not in models.storage.all():
             print("** no instance found **")
-            return False
-        print(models.storage.all()[classNameId])
+        else:
+            print(models.storage.all()[kw])
 
     def do_destroy(self, arg):
         """destroy to Deletes an instance based on the class name and id
