@@ -6,6 +6,7 @@ import cmd
 import re
 from models.base_model import BaseModel
 import models
+import shlex
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -96,18 +97,7 @@ class HBNBCommand(cmd.Cmd):
         of an instance based on the class name and id
         USE: $ show <class name> <id>
         """
-        name = arg.split()
-        kw = ".".join(name)
-        if not name:
-            print("** class name missing **")
-        elif len(name) == 1:
-            print("** instance id missing **")
-        elif name[0] not in globals():
-            print("** class doesn't exist **")
-        elif kw not in models.storage.all():
-            print("** no instance found **")
-        else:
-            print(models.storage.all()[kw])
+        
 
     def do_destroy(self, arg):
         """destroy to Deletes an instance based on the class name and id
@@ -145,27 +135,7 @@ class HBNBCommand(cmd.Cmd):
         on the class name and id by adding or updating attribute
         USE: update <class name> <id> <attribute name> "<attribute value>
         """
-        args = arg.split()
-        kw = ".".join(args[:2])
-        if not args:
-            print("** class name missing **")
-        elif args[0] not in globals():
-            print("** class doesn't exist **")
-        elif len(args) < 2:
-            print("** instance id missing **")
-        elif ".".join(args[:2]) not in models.storage.all():
-            print("** no instance found **")
-        elif len(args) < 3:
-            print("** attribute name missing **")
-        elif len(args) < 4:
-            print("** value missing **")
-        else:
-            kw = ".".join(args[:2])
-            atributs = args[2]
-            value = args[3]
-            _dict = models.storage.all()[kw].__dict__
-            _dict[atributs] = value
-            models.storage.save()
+        
 
     def do_count(self, cls_name):
         """count to retrieve the number of instances of a class

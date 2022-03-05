@@ -8,23 +8,6 @@ import uuid
 from datetime import datetime
 
 
-# def convertTime(obj):
-#     """
-#     Function - convertTime(obj):
-#         convert in date format
-
-#         Object:
-#             obj(datetime): date time to convert
-
-#         Return:
-#             the date in a datetime format
-#     """
-
-#     if type(obj) in [datetime]:
-#         obj = obj.strftime('%Y-%m-%dT%H:%M:%S.%f')
-#     return datetime.strptime(obj, "%Y-%m-%dT%H:%M:%S.%f")
-
-
 class BaseModel:
     """
     All the instance used listed:
