@@ -171,37 +171,7 @@ class HBNBCommand(cmd.Cmd):
         on the class name and id by adding or updating attribute
         USE: update <class name> <id> <attribute name> "<attribute value>
         """
-        if not line:
-            print("** class name missing **")
-            return False
-        line = line.replace(",", "")
-        data = shlex.split(line)
-        if data[0] not in class_dict:
-            print("** class doesn't exist **")
-            return False
-        if len(data) == 1:
-            print("** instance id missing **")
-            return False
-        strLine = f"{data[0]}.{data[1]}"
-        if strLine not in models.storage.all():
-            print("** no instance found **")
-            return False
-        if len(data) == 2:
-            print("** attribute name missing **")
-            return False
-        if len(data) == 3:
-            print("** value missing **")
-            return False
-        currentInstance = models.storage.all()[strLine]
-        if data[2] == "id" or data[2] == "created_at" or\
-                data[2] == "updated_at":
-            return False
-        if data[3].isnumeric():
-            data[3] = int(data[3])
-        elif self.is_float(data[3]):
-            data[3] = float(data[3])
-        setattr(currentInstance, data[2], data[3])
-        models.storage.save()
+        pass
 
     def do_count(self, cls_name):
         """count to retrieve the number of instances of a class
