@@ -94,3 +94,20 @@ class TestFile_Storage(unittest.TestCase):
                           "State." + State_test.id,
                           "User." + User_test.id]:
             self.assertIn(AllClass, jsonfile.keys())
+
+    def test_new(self):
+        BaseModel_test = BaseModel()
+        Amenity_test = Amenity()
+        Place_test = Place()
+        City_test = City()
+        Review_test = Review()
+        State_test = State()
+        User_test = User()
+        for AllClass in ["BaseModel." + BaseModel_test.id,
+                          "Amenity." + Amenity_test.id,
+                          "Place." + Place_test.id,
+                          "City." + City_test.id,
+                          "Review." + Review_test.id,
+                          "State." + State_test.id,
+                          "User." + User_test.id]:
+            self.assertIn(AllClass, models.storage.all().keys())
