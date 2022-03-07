@@ -111,3 +111,9 @@ class TestFile_Storage(unittest.TestCase):
                           "State." + State_test.id,
                           "User." + User_test.id]:
             self.assertIn(AllClass, models.storage.all().keys())
+
+    def test_attributes_assignement(self):
+        self.assertIn("_FileStorage__objects", FileStorage.__dict__)
+        self.assertIsInstance(FileStorage._FileStorage__objects, dict)
+        self.assertIn("_FileStorage__file_path", FileStorage.__dict__)
+        self.assertIsInstance(FileStorage._FileStorage__file_path, str)
