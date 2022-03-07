@@ -79,10 +79,6 @@ class HBNBCommand(cmd.Cmd):
         """
         pass
 
-    def parse(arg):
-        """Convert a series of zero or more numbers to an argument tuple"""
-        return shlex.split(arg)
-
     def do_quit(self, arg):
         """Quit command to exit the program
         USE: $ quit
@@ -171,7 +167,29 @@ class HBNBCommand(cmd.Cmd):
         on the class name and id by adding or updating attribute
         USE: update <class name> <id> <attribute name> "<attribute value>
         """
-        pass
+        spliting = arg.split()
+        if len(spliting) == 0:
+            print("** class name missing **")
+            return False
+        if spliting[0] in class_dict:
+            if len(spliting) > 1:
+                key = spliting[0] + '.' + spliting[1]
+                if key in storage.all():
+                    if len(spliting) > 2:
+                        if len(spliting) > 3:
+                            setattr(storage.all()[key],
+                                    spliting[2], spliting[3])
+                            storage.all()[key].save()
+                        else:
+                            print("** value missing **")
+                    else:
+                        print("** attribute name missing **")
+                else:
+                    print("** no instance found **")
+            else:
+                print("** instance id missing **")
+        else:
+            print("** class doesn't exist **")
 
     def do_count(self, cls_name):
         """count to retrieve the number of instances of a class
