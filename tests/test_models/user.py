@@ -6,12 +6,12 @@ all common attributes/methods for other classes
 
 
 import unittest
-from models import place
-from models.place import Place
+from models import user
+from models.user import User
 import os
 
 
-class TestPlace(unittest.TestCase):
+class TestUser(unittest.TestCase):
     """
     Test All city class:
     """
@@ -20,35 +20,35 @@ class TestPlace(unittest.TestCase):
         """
         Test documentation
         """
-        module = len(place.__doc__)
+        module = len(user.__doc__)
         self.assertGreater(module, 0)
 
-        module_class = len(Place.__doc__)
+        module_class = len(User.__doc__)
         self.assertGreater(module_class, 0)
 
-        module_class = len(Place.__init__.__doc__)
+        module_class = len(User.__init__.__doc__)
         self.assertGreater(module_class, 0)
 
-        module_class = len(Place.__str__.__doc__)
+        module_class = len(User.__str__.__doc__)
         self.assertGreater(module_class, 0)
 
-        module_class = len(Place.save.__doc__)
+        module_class = len(User.save.__doc__)
         self.assertGreater(module_class, 0)
 
-        module_class = len(Place.to_dict.__doc__)
+        module_class = len(User.to_dict.__doc__)
         self.assertGreater(module_class, 0)
 
     def test_Name(self):
         """
         Test name
         """
-        self.assertIn("name", Place.__dict__)
-        self.assertIsInstance(Place.name, str)
+        self.assertIn("name", User.__dict__)
+        self.assertIsInstance(User.name, str)
         
     def test_Equal(self):
         """
         test correct name
         """
-        my_Place = Place()
-        my_Place.name = "Hello"
-        self.assertEqual(my_Place.name, "Hello")
+        my_User = User()
+        my_User.name = "Hello"
+        self.assertEqual(my_User.name, "Hello")
