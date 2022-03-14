@@ -121,8 +121,6 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return False
         classNameId = f"{data[0]}.{data[1]}"
-        print(classNameId)
-        print(models.storage.all())
         if classNameId not in models.storage.all():
             print("** no instance found **")
             return False

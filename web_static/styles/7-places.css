@@ -1,0 +1,39 @@
+.places h1 {
+  margin-left: 20px;
+  font-size: 30px;
+  margin-bottom: 0px;
+}
+
+article h2 {
+  width: 390px;
+  padding: 20px;
+  margin: 20px;
+  border: #ff5a5f 1px solid;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 30px;
+}
+
+h2 {
+  font-size: 30px;
+}
+
+.home {
+  margin-left: 35px;
+  display: flex;
+  float: left;
+}
+
+.house {
+  display: flex;
+  margin-left: 35px;
+}
+
+.suite {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-left: 35px;
+}
